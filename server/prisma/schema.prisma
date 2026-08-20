@@ -1,0 +1,142 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("Customer")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  accounts  Account[]
+  budgets   Budget[]
+  investments Investment[]
+  cards     Card[]
+  vaults    Vault[]
+  externalBanks ExternalBankLink[]
+}
+
+model Budget {
+  id        String   @id @default(uuid())
+  category  String
+  amount    Float
+  month     String   // e.g., "2026-08"
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Investment {
+  id            String   @id @default(uuid())
+  name          String
+  type          String   // Stock, Crypto, Mutual Fund
+  quantity      Float
+  purchasePrice Float
+  currentPrice  Float    @default(0)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Account {
+  id            String   @id @default(uuid())
+  accountNumber String   @default("1000000000000")
+  name          String
+  type          String
+  balance       Float    @default(0)
+  currency      String   @default("ETB")
+  status        String   @default("Active")
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  transactions  Transaction[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  amount        Float
+  type          String   
+  category      String
+  date          DateTime @default(now())
+  paymentMethod String
+  notes         String?
+  accountId     String
+  account       Account  @relation(fields: [accountId], references: [id])
+  createdAt     DateTime @default(now())
+}
+
+model Transfer {
+  id                  String   @id @default(uuid())
+  senderAccountId     String
+  receiverAccountNumber String
+  receiverName        String?
+  amount              Float
+  currency            String   @default("ETB")
+  reference           String
+  date                DateTime @default(now())
+  status              String   @default("Completed")
+}
+
+model BillPayment {
+  id          String   @id @default(uuid())
+  userId      String
+  provider    String   // Ethio Telecom, EEU Electricity, AAWSA Water, School Fee
+  accountNo   String   // Customer ID / Meter No
+  amount      Float
+  receiptNo   String
+  date        DateTime @default(now())
+  status      String   @default("Success")
+}
+
+model Card {
+  id               String   @id @default(uuid())
+  cardNumber       String   // e.g. "4532 **** **** 8890"
+  cardHolder       String
+  expiry           String   // e.g. "08/29"
+  cvv              String   // e.g. "889"
+  type             String   // "Virtual", "Physical", "Disposable"
+  status           String   @default("Active") // "Active" or "Frozen"
+  onlinePayEnabled Boolean  @default(true)
+  atmEnabled       Boolean  @default(true)
+  spendingLimit    Float    @default(50000)
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Vault {
+  id             String   @id @default(uuid())
+  name           String
+  targetAmount   Float
+  currentAmount  Float    @default(0)
+  category       String   @default("Savings Goal")
+  roundUpEnabled Boolean  @default(false)
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ExternalBankLink {
+  id             String   @id @default(uuid())
+  bankName       String   // "Awash Bank", "Bank of Abyssinia", "Dashen Bank", "Hibret Bank", "Cooperative Bank of Oromia", "Telebirr"
+  accountNumber  String
+  accountHolder  String
+  balance        Float    @default(0)
+  status         String   @default("Connected")
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}

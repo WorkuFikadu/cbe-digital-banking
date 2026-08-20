@@ -1,0 +1,8 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="6" y="6" width="108" height="108" rx="28" fill="#581c87" stroke="#f59e0b" stroke-width="4" />
+  <path d="M60 22 L90 38 L90 82 L60 98 L30 82 L30 38 Z" fill="#3b0764" stroke="#fbbf24" stroke-width="3" />
+  <circle cx="60" cy="50" r="18" fill="none" stroke="#fbbf24" stroke-width="4" />
+  <path d="M60 38 L60 62 M48 50 L72 50" stroke="#fbbf24" stroke-width="4" stroke-linecap="round" />
+  <path d="M42 74 C50 68, 70 68, 78 74" stroke="#fbbf24" stroke-width="3.5" fill="none" stroke-linecap="round" />
+  <text x="60" y="93" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="900" font-family="Arial, sans-serif" letter-spacing="2">CBE</text>
+</svg>
